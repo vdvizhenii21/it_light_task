@@ -11,6 +11,6 @@ app.autodiscover_tasks()
 app.conf.beat_schedule = {
     'change_price': {
         'task': 'order_processing.tasks.change_price_product',
-        'schedule': crontab(minute='*/1')
+        'schedule': crontab(minute=0, hour=0)
     }
 }
