@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+
+  redis:
+    image: redis:alpine
+
+  web:
+    build: .
+    restart: always
+    volumes:
+      - static_value:/app/static/
+      - media_value:/app/media/
+    depends_on:
+      - redis
+    env_file:
+      - ./.env
+
+  nginx:
+    image: nginx:1.19.3
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - static_value:/code/static/
+      - media_value:/var/html/media/
+
+    depends_on:
+      - web
+  celery:
+    build: .
+    command: celery -A shop_system worker -l info
+    volumes:
+      - .:/code/
+    environment:
+      - DEBUG=1
+      - SECRET_KEY=django-insecure-v#zs7&&7iq4il9e7q46++w!pyxlqm^0fac^1a4g53ha&ud9o#1
+      - DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]
+    depends_on:
+      - redis
+
+  celery-beat:
+    build: .
+    command: celery -A shop_system beat -l info
+    volumes:
+      - .:/code/
+    environment:
+      - DEBUG=1
+      - SECRET_KEY=django-insecure-v#zs7&&7iq4il9e7q46++w!pyxlqm^0fac^1a4g53ha&ud9o#1
+      - DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]
+    depends_on:
+      - redis
+
+volumes:
+  static_value:
+  media_value:
+
