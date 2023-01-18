@@ -1,8 +1,8 @@
 from rest_framework.permissions import BasePermission
 
 
-class IsAccountant(BasePermission):
-    allowed_user_roles = ('accountant', )
+class IsAccountantandCashier(BasePermission):
+    allowed_user_roles = ('accountant', 'cashier', )
 
     def has_permission(self, request, view):
         if request.user.is_authenticated:

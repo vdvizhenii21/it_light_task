@@ -3,7 +3,7 @@ from rest_framework import viewsets
 from .serializers import ProductSerializer, OrderSerializer, InvoiceSerializer
 from .filters import OrderItemFilter
 from django_filters import rest_framework as filters
-from .permissions import IsAccountant
+from .permissions import IsAccountantandCashier
 
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
@@ -18,7 +18,7 @@ class OrderViewSet(viewsets.ModelViewSet):
 
 
 class InvoiceViewSet(viewsets.ModelViewSet):
-    permission_classes = IsAccountant
+    permission_classes = IsAccountantandCashier
     queryset = Invoice.objects.all()
     serializer_class = InvoiceSerializer
 
